@@ -696,8 +696,7 @@ class SendPage extends React.Component {
     let accountInfo = this.props.accountInfo
 
     let shares = this.state.reclaimShare
-    let amount = new BigNumber(this.state.amount).toString()
-    amount = toNonExponential(amount)
+    let amount = new BigNumber(this.state.amount).toFixed()
     let toAddress = this.getToAddress()
 
     let nonce = trimSpace(this.state.nonce) || accountInfo.nonce
@@ -906,10 +905,8 @@ class SendPage extends React.Component {
     if(!isNumber(inputAmount) || !new BigNumber(inputAmount).gt(0)){
       return 0
     }
-    const {amount ,shares} = this.props.nodeDetail
-    let sharePerAmount = new BigNumber(shares).dividedBy(amount).toString()
-    let realShare = new BigNumber(inputAmount).multipliedBy(sharePerAmount).toFixed(4,1).toString()
-    realShare = toNonExponential(realShare)
+    const {amount, shares} = this.props.nodeDetail
+    const realShare = new BigNumber(inputAmount).multipliedBy(shares).dividedBy(amount).toFixed(cointypes.decimals)
     return realShare
   }
 

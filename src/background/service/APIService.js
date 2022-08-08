@@ -755,7 +755,9 @@ class APIService {
                 const tw = oasis.staking.allowWrapper()
                 params.method = TRANSACTION_TYPE.StakingAllow
                 params.toAddress = oasis.staking.addressToBech32(await oasis.staking.addressFromRuntimeID(oasis.misc.fromHex(params.runtimeId)))
-                let result = await this.submitTxBody(params, tw,true,(data)=>this.depositToParatimeAccount(params,resolve,reject,data)).catch(err=>err)
+                let result = await this.submitTxBody(params, tw, true, (data) => {
+                    this.depositToParatimeAccount(params, resolve, reject, data)
+                }).catch(err=>err)
                 if(result&&result.error){
                     reject({error:result.error})
                 }
@@ -806,7 +808,7 @@ class APIService {
             let u8Hash = await oasis.hash.hash(oasis.misc.toCBOR(txWrapper.unverifiedTransaction))
             let hash = oasis.misc.toHex(u8Hash)
             let config =  getRuntimeConfig(params.runtimeId)
-            if (hash && config.accountType === RUNTIME_ACCOUNT_TYPE.EVM) {
+            if (hash && config.indexesTransactions) {
                 this.createNotificationAfterRuntimeTxSucceeds(hash,params.runtimeId)
                 return {
                     code:0,
@@ -850,7 +852,7 @@ class APIService {
             let u8Hash = await oasis.hash.hash(oasis.misc.toCBOR(txWrapper.unverifiedTransaction))
             let hash = oasis.misc.toHex(u8Hash)
             let config =  getRuntimeConfig(params.runtimeId)
-            if (hash && config.accountType === RUNTIME_ACCOUNT_TYPE.EVM) {
+            if (hash && config.indexesTransactions) {
                 this.createNotificationAfterRuntimeTxSucceeds(hash,params.runtimeId)
                 return {
                     code:0,
